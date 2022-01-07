@@ -18,7 +18,9 @@ var builder = WebApplication.CreateBuilder(args);
  
     services.AddCors();
     services.AddControllers();
-    services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+    // configure automapper with all automapper profiles from this assembly
+    services.AddAutoMapper(typeof(Program));
 
     // configure strongly typed settings object
     services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
