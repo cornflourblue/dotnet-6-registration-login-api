@@ -1,7 +1,7 @@
 namespace WebApi.Services;
 
 using AutoMapper;
-using BCryptNet = BCrypt.Net.BCrypt;
+using BCrypt.Net;
 using WebApi.Authorization;
 using WebApi.Entities;
 using WebApi.Helpers;
@@ -38,7 +38,7 @@ public class UserService : IUserService
         var user = _context.Users.SingleOrDefault(x => x.Username == model.Username);
 
         // validate
-        if (user == null || !BCryptNet.Verify(model.Password, user.PasswordHash))
+        if (user == null || !BCrypt.Verify(model.Password, user.PasswordHash))
             throw new AppException("Username or password is incorrect");
 
         // authentication successful
@@ -67,7 +67,7 @@ public class UserService : IUserService
         var user = _mapper.Map<User>(model);
 
         // hash password
-        user.PasswordHash = BCryptNet.HashPassword(model.Password);
+        user.PasswordHash = BCrypt.HashPassword(model.Password);
 
         // save user
         _context.Users.Add(user);
@@ -84,7 +84,7 @@ public class UserService : IUserService
 
         // hash password if it was entered
         if (!string.IsNullOrEmpty(model.Password))
-            user.PasswordHash = BCryptNet.HashPassword(model.Password);
+            user.PasswordHash = BCrypt.HashPassword(model.Password);
 
         // copy model to user and save
         _mapper.Map(model, user);
